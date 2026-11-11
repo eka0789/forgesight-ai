@@ -32,7 +32,9 @@ jobs:
           ENV: development
           RATE_LIMIT_ENABLED: "false"
           SECRET_KEY: ci-test-secret-key-for-pipeline-only-32ch
-        run: pytest -q
+        # `python -m pytest` adds CWD (services/api) to sys.path so the `app`
+        # package resolves — bare `pytest` does not.
+        run: python -m pytest -q
 
   ml-training:
     runs-on: ubuntu-latest
