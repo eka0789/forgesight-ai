@@ -50,9 +50,6 @@ class RateLimitMiddleware(BaseHTTPMiddleware):
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    import logging
-
-    logger = logging.getLogger(__name__)
     setup_logging()
 
     if settings.env == "production" and settings.secret_key == "change-me-in-production":
