@@ -1,0 +1,113 @@
+{
+  "failure": {
+    "version": "v1.0.0-20261111",
+    "model_type": "random_forest",
+    "metrics": {
+      "test": {
+        "accuracy": 0.967,
+        "precision": 0.8588,
+        "recall": 0.9838,
+        "f1": 0.9171,
+        "roc_auc": 0.9807,
+        "pr_auc": 0.8981,
+        "confusion_matrix": [
+          [
+            1569,
+            60
+          ],
+          [
+            6,
+            365
+          ]
+        ],
+        "latency_ms_per_1k": 59.21
+      }
+    },
+    "params": {
+      "models_compared": [
+        "logistic_regression",
+        "random_forest",
+        "hist_gradient_boosting",
+        "xgboost"
+      ],
+      "selection_metric": "val_f1",
+      "imbalance_strategy": "class_weight/balanced or scale_pos_weight"
+    },
+    "splits": {
+      "val": {
+        "accuracy": 0.9725,
+        "precision": 0.8728,
+        "recall": 0.9887,
+        "f1": 0.9272,
+        "roc_auc": 0.9864,
+        "pr_auc": 0.9012,
+        "confusion_matrix": [
+          [
+            1595,
+            51
+          ],
+          [
+            4,
+            350
+          ]
+        ],
+        "latency_ms_per_1k": 64.37
+      },
+      "test": {
+        "accuracy": 0.967,
+        "precision": 0.8588,
+        "recall": 0.9838,
+        "f1": 0.9171,
+        "roc_auc": 0.9807,
+        "pr_auc": 0.8981,
+        "confusion_matrix": [
+          [
+            1569,
+            60
+          ],
+          [
+            6,
+            365
+          ]
+        ],
+        "latency_ms_per_1k": 59.21
+      }
+    },
+    "dataset": {
+      "name": "ai4i_synthetic.csv",
+      "sha256": "e2988204ffc5dcd3",
+      "rows": 10000,
+      "is_synthetic": true
+    }
+  },
+  "rul": {
+    "version": "v1.0.0-20261111",
+    "model_type": "hist_gradient_boosting",
+    "metrics": {
+      "test": {
+        "mae": 21.301,
+        "rmse": 27.748,
+        "r2": 0.8707
+      }
+    },
+    "params": {
+      "models_compared": [
+        "random_forest",
+        "hist_gradient_boosting"
+      ]
+    },
+    "splits": {
+      "test": {
+        "mae": 21.301,
+        "rmse": 27.748,
+        "r2": 0.8707
+      }
+    },
+    "dataset": {
+      "name": "cmapps_synthetic_rul.csv",
+      "sha256": "a20e5984cdc42b8e",
+      "rows": 60750,
+      "is_synthetic": true
+    }
+  }
+}

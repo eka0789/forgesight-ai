@@ -1,0 +1,10 @@
+# ForgeSight AI — optional heavy ML/DL stack.
+# Everything in this file is *optional at runtime*: app code guards imports and
+# degrades gracefully (classical CV, sklearn boosters, hashing embeddings).
+# Install with: pip install -r requirements-ml.txt
+torch>=2.5
+xgboost>=2.1
+ultralytics>=8.3
+sentence-transformers>=3.2
+mlflow-skinny>=2.17
+matplotlib>=3.9

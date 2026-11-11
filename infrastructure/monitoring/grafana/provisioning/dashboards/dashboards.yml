@@ -1,0 +1,8 @@
+apiVersion: 1
+
+providers:
+  - name: ForgeSight AI
+    folder: ForgeSight
+    type: file
+    options:
+      path: /etc/grafana/provisioning/dashboards/json

@@ -1,0 +1,31 @@
+# ForgeSight AI — API core requirements (install first; CPU-only friendly)
+fastapi>=0.115
+uvicorn[standard]>=0.32
+pydantic>=2.9
+pydantic-settings>=2.6
+sqlalchemy>=2.0.36
+alembic>=1.14
+psycopg2-binary>=2.9.9
+pyjwt>=2.10
+bcrypt>=4.2
+python-multipart>=0.0.12
+httpx>=0.28
+aiofiles>=24.1
+redis>=5.0
+
+joblib>=1.4
+numpy>=2.1
+pandas>=2.2
+scikit-learn>=1.5
+opencv-python-headless>=4.10
+prometheus-client>=0.21
+pgvector>=0.3.5
+email-validator>=2.2
+pypdf>=5.0
+python-docx>=1.1
+boto3>=1.35
+
+# Dev / test
+pytest>=8.3
+pytest-asyncio>=0.24
+ruff>=0.7

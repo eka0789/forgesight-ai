@@ -1,0 +1,89 @@
+name: CI
+
+on:
+  push:
+    branches: [main, master]
+  pull_request:
+
+jobs:
+  backend:
+    runs-on: ubuntu-latest
+    needs: [ml-training]  # tests assert trained artifacts exist (e.g. health endpoint)
+    defaults:
+      run:
+        working-directory: services/api
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install deps
+        run: pip install -r requirements.txt
+      - name: Lint (ruff — must be clean)
+        run: ruff check app tests
+      - name: Download trained artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: ml-artifacts
+          path: ml/artifacts  # relative to GITHUB_WORKSPACE (repo root)
+      - name: Tests
+        env:
+          ENV: development
+          RATE_LIMIT_ENABLED: "false"
+          SECRET_KEY: ci-test-secret-key-for-pipeline-only-32ch
+        run: pytest -q
+
+  ml-training:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+      - name: Install deps
+        run: pip install -r services/api/requirements.txt scikit-learn joblib pandas numpy
+      - name: Generate synthetic dataset + train (CPU, no torch)
+        run: |
+          python -m ml.training.generate_ai4i_synthetic
+          python -m ml.training.train_pdm_failure
+          python -m ml.training.train_pdm_rul
+          python -m ml.training.cluster_machines
+      - name: Assert artifacts exist
+        run: |
+          test -f ml/artifacts/pdm/failure_model.joblib
+          test -f ml/artifacts/pdm/rul_model.joblib
+          test -f ml/artifacts/pdm/metrics.json
+      - uses: actions/upload-artifact@v4
+        with:
+          name: ml-artifacts
+          path: ml/artifacts
+
+  web:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: apps/web
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+          cache-dependency-path: apps/web/package-lock.json
+      - run: npm ci
+      - name: Type-check & build
+        run: npm run build
+        env:
+          NEXT_TELEMETRY_DISABLED: 1
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [backend]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build API image
+        run: docker build -f services/api/Dockerfile -t forgesight-api:ci .
+      - name: Build web image
+        run: docker build -f apps/web/Dockerfile -t forgesight-web:ci .

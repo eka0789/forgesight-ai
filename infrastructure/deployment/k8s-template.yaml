@@ -1,0 +1,113 @@
+# ForgeSight AI — Kubernetes deployment templates (optional scaling stage).
+# Apply: kubectl apply -f infrastructure/deployment/k8s-template.yaml
+# NOTE: templates reference a pre-built image (set via `kubectl create secret`
+#       and your registry). Postgres must provide pgvector (see image).
+---
+apiVersion: v1
+kind: Namespace
+metadata:
+  name: forgesight
+---
+apiVersion: v1
+kind: Secret
+metadata:
+  name: forgesight-secrets
+  namespace: forgesight
+type: Opaque
+stringData:
+  SECRET_KEY: "REPLACE-WITH-openssl-rand-hex-32"
+  DATABASE_URL: "postgresql+psycopg2://forgesight:CHANGE-ME@postgres.forgesight:5432/forgesight"
+  REDIS_URL: "redis://redis.forgesight:6379/0"
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forgesight-api
+  namespace: forgesight
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: forgesight-api }
+  template:
+    metadata:
+      labels: { app: forgesight-api }
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: /metrics
+        prometheus.io/port: "8000"
+    spec:
+      containers:
+        - name: api
+          image: registry.example.com/forgesight-api:latest  # replace
+          ports: [{ containerPort: 8000 }]
+          envFrom:
+            - secretRef: { name: forgesight-secrets }
+          resources:
+            requests: { cpu: "500m", memory: "1Gi" }
+            limits: { cpu: "2", memory: "4Gi" }
+          readinessProbe:
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 10
+          livenessProbe:
+            httpGet: { path: /health, port: 8000 }
+            initialDelaySeconds: 20
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgesight-api
+  namespace: forgesight
+spec:
+  selector: { app: forgesight-api }
+  ports: [{ port: 8000, targetPort: 8000 }]
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: forgesight-web
+  namespace: forgesight
+spec:
+  replicas: 2
+  selector:
+    matchLabels: { app: forgesight-web }
+  template:
+    metadata:
+      labels: { app: forgesight-web }
+    spec:
+      containers:
+        - name: web
+          image: registry.example.com/forgesight-web:latest  # replace
+          ports: [{ containerPort: 3000 }]
+          env:
+            - name: NEXT_PUBLIC_API_URL
+              value: "https://api.forgesight.example.com"  # replace
+          readinessProbe:
+            httpGet: { path: /, port: 3000 }
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: forgesight-web
+  namespace: forgesight
+spec:
+  selector: { app: forgesight-web }
+  ports: [{ port: 3000, targetPort: 3000 }]
+---
+# Horizontal scaling for CPU-bound inference workers
+apiVersion: autoscaling/v2
+kind: HorizontalPodAutoscaler
+metadata:
+  name: forgesight-api-hpa
+  namespace: forgesight
+spec:
+  scaleTargetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: forgesight-api
+  minReplicas: 2
+  maxReplicas: 8
+  metrics:
+    - type: Resource
+      resource:
+        name: cpu
+        target: { type: Utilization, averageUtilization: 70 }

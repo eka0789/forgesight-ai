@@ -1,0 +1,53 @@
+{
+  "title": "ForgeSight AI — Platform Overview",
+  "uid": "forgesight-overview",
+  "refresh": "15s",
+  "time": { "from": "now-1h", "to": "now" },
+  "panels": [
+    {
+      "type": "timeseries",
+      "title": "HTTP request latency (p50 / p95)",
+      "gridPos": { "h": 8, "w": 12, "x": 0, "y": 0 },
+      "targets": [
+        { "expr": "histogram_quantile(0.50, sum(rate(fsg_http_request_latency_seconds_bucket[5m])) by (le))", "legendFormat": "p50" },
+        { "expr": "histogram_quantile(0.95, sum(rate(fsg_http_request_latency_seconds_bucket[5m])) by (le))", "legendFormat": "p95" }
+      ]
+    },
+    {
+      "type": "timeseries",
+      "title": "Model inference latency (by model)",
+      "gridPos": { "h": 8, "w": 12, "x": 12, "y": 0 },
+      "targets": [
+        { "expr": "histogram_quantile(0.95, sum(rate(fsg_model_inference_latency_seconds_bucket[5m])) by (le, model))", "legendFormat": "{{model}} p95" }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Inspections total (rate 1h)",
+      "gridPos": { "h": 4, "w": 6, "x": 0, "y": 8 },
+      "targets": [{ "expr": "sum(increase(fsg_inspections_total[1h]))" }]
+    },
+    {
+      "type": "stat",
+      "title": "PDM predictions (rate 1h)",
+      "gridPos": { "h": 4, "w": 6, "x": 6, "y": 8 },
+      "targets": [{ "expr": "sum(increase(fsg_pdm_predictions_total[1h]))" }]
+    },
+    {
+      "type": "stat",
+      "title": "WebSocket connections",
+      "gridPos": { "h": 4, "w": 6, "x": 12, "y": 8 },
+      "targets": [{ "expr": "fsg_ws_connections" }]
+    },
+    {
+      "type": "timeseries",
+      "title": "HTTP errors (5xx rate)",
+      "gridPos": { "h": 8, "w": 24, "x": 0, "y": 12 },
+      "targets": [
+        { "expr": "sum(rate(fsg_http_request_latency_seconds_count{status=~\"5..\"}[5m])) by (endpoint)", "legendFormat": "{{endpoint}}" }
+      ]
+    }
+  ],
+  "schemaVersion": 39,
+  "version": 1
+}

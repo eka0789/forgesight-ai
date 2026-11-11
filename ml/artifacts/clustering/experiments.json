@@ -1,0 +1,98 @@
+{
+  "version": "v1.0.0-20261111",
+  "kmeans": {
+    "best_k": 2,
+    "best_silhouette": 0.3067,
+    "sweep": {
+      "k=2": {
+        "silhouette": 0.3067,
+        "sizes": [
+          1955,
+          2045
+        ]
+      },
+      "k=3": {
+        "silhouette": 0.1241,
+        "sizes": [
+          1401,
+          1328,
+          1271
+        ]
+      },
+      "k=4": {
+        "silhouette": 0.1076,
+        "sizes": [
+          752,
+          1122,
+          1233,
+          893
+        ]
+      },
+      "k=5": {
+        "silhouette": 0.0902,
+        "sizes": [
+          782,
+          640,
+          970,
+          595,
+          1013
+        ]
+      },
+      "k=6": {
+        "silhouette": 0.073,
+        "sizes": [
+          507,
+          730,
+          1017,
+          520,
+          818,
+          408
+        ]
+      }
+    }
+  },
+  "dbscan": {
+    "sweep": {
+      "eps=0.8": {
+        "n_clusters": 3,
+        "noise_ratio": 0.9912,
+        "silhouette": -0.4813
+      },
+      "eps=1.0": {
+        "n_clusters": 3,
+        "noise_ratio": 0.7055,
+        "silhouette": -0.3801
+      },
+      "eps=1.2": {
+        "n_clusters": 2,
+        "noise_ratio": 0.3417,
+        "silhouette": -0.1157
+      },
+      "eps=1.5": {
+        "n_clusters": 1,
+        "noise_ratio": 0.0968,
+        "silhouette": 0.0
+      }
+    }
+  },
+  "metrics": {
+    "silhouette": 0.3067
+  },
+  "params": {
+    "features": [
+      "air_temperature",
+      "process_temperature",
+      "rotational_speed",
+      "torque",
+      "tool_wear",
+      "vibration",
+      "temp_delta",
+      "power_w",
+      "wear_torque_product",
+      "speed_torque_ratio"
+    ],
+    "sample_rows": 4000
+  },
+  "splits": {},
+  "note": "Exploratory behavior segmentation \u2014 NOT used for production maintenance decisions."
+}
