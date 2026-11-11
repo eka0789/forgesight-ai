@@ -33,6 +33,9 @@ class AutoencoderAnomaly:
 
             from app.services.vision.ae_model import SurfaceAutoencoder
 
+            if SurfaceAutoencoder is None:  # torch absent → classical fallback path
+                return
+
             self._torch = torch
             ckpt = torch.load(path, map_location="cpu", weights_only=False)
             model = SurfaceAutoencoder(latent=ckpt.get("latent", 32))

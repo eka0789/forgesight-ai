@@ -35,6 +35,9 @@ class CnnClassifier:
 
             from app.services.vision.cnn_model import DefectCNN
 
+            if DefectCNN is None:  # torch absent → classical fallback path
+                return
+
             self._torch = torch
             ckpt = torch.load(path, map_location="cpu", weights_only=False)
             model = DefectCNN(num_classes=len(ckpt.get("classes", self.classes)))
