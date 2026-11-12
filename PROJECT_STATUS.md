@@ -2,6 +2,19 @@
 
 > Build log maintained across sessions. Last updated: 2026-11-12.
 
+## 🚀 GitHub & CI (2026-11-12)
+
+- Repo: **https://github.com/eka0789/forgesight-ai** (public, `main`)
+- Commits: `4387fa9` full build → `3edb499` CI lint fix (unused logger) →
+  `ecc0fdc` CI pytest fix (`python -m pytest`) → `882a4d3` torch-optional fix
+- **CI: all 4 jobs green** — `ml-training` ✓ `web` ✓ `backend` ✓ `docker-build` ✓
+- CI caught 3 real issues that local runs missed:
+  1. `F841` unused logger (edit made after last local lint run)
+  2. bare `pytest` doesn't add CWD to `sys.path` → `python -m pytest`
+  3. **module-level torch imports broke the no-torch contract** — `cnn_model`/
+     `ae_model` now define model classes only when torch exists; verified
+     locally by importing `app.main` with torch blocked (degrades to classical CV)
+
 ## 🧹 Full audit pass (2026-11-12) — semua temuan diperbaiki
 
 ### Findings & fixes
