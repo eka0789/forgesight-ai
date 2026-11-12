@@ -23,20 +23,30 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return <QueryClientProvider client={client}>{children}</QueryClientProvider>;
 }
 
-/** Client-side auth guard for the (app) route group. */
+/** Client-side auth guard for the (app) route group.
+ *
+ * Redirect decisions read the store LIVE (getState) instead of render-captured
+ * values: zustand persist rehydration can complete between render and effect,
+ * and a stale (hydrated, token) pair once redirected logged-in users to
+ * /login on every hard reload. `undefined` = still resolving (render nothing). */
 export function AuthGuard({ children }: { children: React.ReactNode }) {
-  const token = useAuthStore((s) => s.token);
-  const hydrated = useAuthStore.persist?.hasHydrated?.() ?? true;
   const router = useRouter();
   const pathname = usePathname();
+  const [token, setToken] = useState<string | null | undefined>(undefined);
 
   useEffect(() => {
-    if (hydrated && !token) {
+    const sync = () => setToken(useAuthStore.getState().token);
+    sync(); // persist rehydrates at store init — token is available here
+    const unsub = useAuthStore.subscribe(sync);
+    return unsub;
+  }, []);
+
+  useEffect(() => {
+    if (token === null) {
       router.replace(`/login?next=${encodeURIComponent(pathname)}`);
     }
-  }, [hydrated, token, router, pathname]);
+  }, [token, pathname, router]);
 
-  if (!hydrated) return null;
-  if (!token) return null;
+  if (token === undefined || token === null) return null;
   return <>{children}</>;
 }

@@ -27,6 +27,37 @@ model outputs. Where a capability needs an external key or binary (LLM
 providers, YOLO weights, OCR), the platform runs a **clearly-labeled local
 adapter** instead of pretending the integration is live.
 
+## 📸 Screenshots
+
+Captured from the running app (`docs/screenshots/`, regeneratable via
+`scripts/take_screenshots.mjs`). Demo org is visibly labeled; every AI result
+shows the exact method that produced it.
+
+<table>
+  <tr>
+    <td width="50%"><img src="docs/screenshots/02-dashboard.png" alt="Overview dashboard" /><br><b>Overview</b> — KPIs, 14-day production trend, defect distribution, machine status, live model metrics, AI system health</td>
+    <td width="50%"><img src="docs/screenshots/04-vision-result.png" alt="Vision inspection result" /><br><b>Vision inspection</b> — real OpenCV pipeline output: annotated defect localization with confidence + method labeling</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/05-maintenance.png" alt="Predictive maintenance" /><br><b>Predictive maintenance</b> — machine fleet, failure predictions (p(failure), health, RUL), approval-ready maintenance requests</td>
+    <td><img src="docs/screenshots/06-knowledge.png" alt="Knowledge AI — grounded RAG chat" /><br><b>Knowledge AI</b> — grounded answers with numbered citations mapped to real document pages (provider labeled: mock-demo)</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/07-agent.png" alt="AI operations agent" /><br><b>AI Operations Agent</b> — tool-calling workspace with audit badges; sensitive tools (maintenance requests) require human approval</td>
+    <td><img src="docs/screenshots/08-lab.png" alt="ML laboratory" /><br><b>ML Laboratory</b> — experiment browser + educational RL maintenance-scheduling simulation (isolated from production)</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/09-models.png" alt="Model registry" /><br><b>Model Management</b> — registry seeded from trained artifacts (production/staging status, metrics)</td>
+    <td><img src="docs/screenshots/10-monitoring.png" alt="Monitoring" /><br><b>Monitoring</b> — system health, live counters, PSI data-drift report vs training reference</td>
+  </tr>
+  <tr>
+    <td><img src="docs/screenshots/01-login.png" alt="Login" /><br><b>Sign in</b> — themed dark/light auth, demo credentials hint</td>
+    <td><img src="docs/screenshots/12-settings.png" alt="Settings" /><br><b>Settings</b> — organization profile, RBAC user management</td>
+  </tr>
+</table>
+
+*(also captured: `03-vision.png` inspection workspace, `11-reports.png` reports — see `docs/screenshots/`)*
+
 ## Modules
 
 | Module | What it does | Key tech |

@@ -33,6 +33,7 @@
 | 11 | ruff: 73 findings (unused imports, import order); eslint: 7 warnings; stray debug DBs | LOW | all cleaned to **zero** |
 | 12 | ml/ + scripts/ lint: 27 findings (unused vars, import order, blind except) | LOW | cleaned to **zero** |
 | 13 | `mlflow` service double-installed psycopg2 at boot; web Dockerfile healthcheck via wget OK | LOW | left (documented); verified compose-valid |
+| 14 | **AuthGuard redirected logged-in users to /login on every hard reload** (stale render-captured `(hydrated, token)` pair raced zustand persist rehydration) | HIGH | guard rewritten: redirect decision reads the store LIVE via `getState()` + subscription; verified with Playwright reload test (session now survives) — found during README screenshot automation |
 
 ### Post-audit verification (all green)
 - `ruff check app tests ml scripts` → **All checks passed** (0 findings across the repo)
